@@ -34,4 +34,4 @@ npm run publish
 (NOTE: This will only work, if you used `npm run init` first)
 
 ## Just Playing it without having it locally
-Flappy Clone is hosted on a free firebase account. You can see it [here](test-8bde6.web.app)
+Flappy Clone is hosted on a free firebase account. You can see it [here](https://test-8bde6.web.app)
