@@ -2,7 +2,12 @@
 
 html, body {
     margin: 0;
+    position: absolute;
+    inset: 0;
     font-family: 'Roboto', Arial, Helvetica, sans-serif;
     font-size: 1rem;
     background: #fff;
+    display: grid;
+    place-items: center;
+    background-color: #001120
 }

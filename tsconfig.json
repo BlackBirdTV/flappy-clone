@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-      "outDir": "./dist/",
+      "outDir": "public/dist",
       "noImplicitAny": true,
       "sourceMap": true,
       "module": "es6",
