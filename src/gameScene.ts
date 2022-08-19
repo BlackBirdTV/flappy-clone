@@ -130,31 +130,10 @@ export default class gameScene1 extends Phaser.Scene {
 
     cursors: any;
 
-    start: number;
-
-    getTime() {
-        //make a new date object
-        let d = new Date();
-
-        //return the number of milliseconds since 1 January 1970 00:00:00.
-        return d.getTime();
-    }
-
-    deltaTime() {
-        //subtract the start time from the time now
-        // 
-        let elapsed = this.getTime() - this.start;
-
-        //reset the start time
-        this.start = this.getTime();
-        return elapsed;
-    }
-
     upDown = false;
     upPressed = false;
 
     update() {
-        let dt = this.deltaTime();
         this.cursors = this.input.keyboard.createCursorKeys();
 
         this.bird.setAngle(clamp(-60, 60, this.bird.body.velocity.y * 0.5));
@@ -181,21 +160,19 @@ export default class gameScene1 extends Phaser.Scene {
             this.jump.play();
         }
 
-        let biggerstFloorNumber = 0;
+        let biggestFloorNumber = 0;
         let floorToSkip;
 
-        if (this.gameStarted) {
-            for (let i = 0; i < this.pipes.length; ++i) {
-                this.pipes[i].update();
-            }
-            for (let i = 0; i < this.floor.length; ++i) {
-                biggerstFloorNumber = this.floor[i].getCenter().x > biggerstFloorNumber ? this.floor[i].getCenter().x : 0
-                if (this.floor[i].getCenter().x <= -400) {
-                    floorToSkip = this.floor[i]
-                }
-            }
-            floorToSkip?.setPosition(biggerstFloorNumber + 800, 568);
+        for (let i = 0; i < this.pipes.length; ++i) {
+            this.pipes[i].update();
         }
+        for (let i = 0; i < this.floor.length; ++i) {
+            biggestFloorNumber = this.floor[i].getCenter().x > biggestFloorNumber ? i : 0
+            if (this.floor[i].getCenter().x <= -400) {
+                floorToSkip = this.floor[i]
+            }
+        }
+        floorToSkip?.setPosition(this.floor[biggestFloorNumber].getCenter().x + 800, 568);
     }
 
     die() {
