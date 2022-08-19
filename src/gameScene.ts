@@ -29,7 +29,7 @@ export default class gameScene1 extends Phaser.Scene {
     }
 
     bird: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
-    floor: Phaser.GameObjects.Image;
+    floor: Phaser.Physics.Arcade.Image[] = [];
     pipes: Pipes[] = [];
     score: number = 0;
     scoreDisplay: Phaser.GameObjects.Text;
@@ -42,9 +42,12 @@ export default class gameScene1 extends Phaser.Scene {
     create ()
     {
         const bg = this.add.image(400, 300, 'bg')
-        const floor = this.add.image(400, 568, 'floor')
+        for (let i = 0; i < 3; i++) {
+            const floor = this.physics.add.image(400 + 800 * i, 568, 'floor')
+            floor.setDepth(3);
+            this.floor.push(floor);
+        }
         bg.setDepth(1);
-        floor.setDepth(3);
 
         this.anims.create({
             key: 'main',
@@ -82,6 +85,7 @@ export default class gameScene1 extends Phaser.Scene {
     }
 
     startGame() {
+        for (let i = 0; i < this.floor.length; ++i) this.floor[i].setVelocity(-this.pipeSpeed, 0);
         this.jump = this.sound.add('jump');
         this.deathSound = this.sound.add('die');
         this.bird.setGravityY(300);
@@ -152,7 +156,9 @@ export default class gameScene1 extends Phaser.Scene {
     update() {
         let dt = this.deltaTime();
         this.cursors = this.input.keyboard.createCursorKeys();
-        
+
+        this.bird.setAngle(clamp(-60, 60, this.bird.body.velocity.y * 0.5));
+
         if (this.bird.y < 0 || this.bird.y > 512) {
             this.die()
         }
@@ -175,12 +181,25 @@ export default class gameScene1 extends Phaser.Scene {
             this.jump.play();
         }
 
-        for (let i = 0; i < this.pipes.length; ++i) {
-            this.pipes[i].update();
+        let biggerstFloorNumber = 0;
+        let floorToSkip;
+
+        if (this.gameStarted) {
+            for (let i = 0; i < this.pipes.length; ++i) {
+                this.pipes[i].update();
+            }
+            for (let i = 0; i < this.floor.length; ++i) {
+                biggerstFloorNumber = this.floor[i].getCenter().x > biggerstFloorNumber ? this.floor[i].getCenter().x : 0
+                if (this.floor[i].getCenter().x <= -400) {
+                    floorToSkip = this.floor[i]
+                }
+            }
+            floorToSkip?.setPosition(biggerstFloorNumber + 800, 568);
         }
     }
 
     die() {
+        this.floor = [];
         this.gameStarted = false;
         this.score = 0;
         this.deathSound.play();
@@ -192,3 +211,5 @@ function randRange(min: number, max: number) {
     let outp = Math.random() * max + min;
     return outp > max ? max : outp;
 }
+
+const clamp=(min:number,max:number,num:number)=>num<max?num>min?num:min:max

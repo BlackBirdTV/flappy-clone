@@ -7,7 +7,8 @@
     "init": "firebase login && firebase init && npm install",
     "serve": "webpack serve",
     "deploy": "webpack build -c webpack_prod.config.js && firebase deploy",
-    "build": "webpack"
+    "build": "webpack",
+    "push": "git add . && git commit -m \"$MSG\" && git push origin master:main"
   },
   "author": "",
   "license": "ISC",
